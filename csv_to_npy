@@ -1,0 +1,49 @@
+import pandas as pd
+import os
+import glob
+import numpy as np
+import csv
+import sys
+
+np.set_printoptions(threshold=sys.maxsize)
+np.set_printoptions(suppress=True)
+
+file_ctr = 1 # Change Accordingly
+
+for root, dirs, files in os.walk(CSV_DIR):
+        for name in dirs:
+            print("MAIN DIRECTORY: ", os.path.join(root,name))
+            sign_word = os.path.join(root,name)        
+            csv_files = sorted(glob.glob(os.path.join(sign_word, "*.csv")), key=os.path.getmtime)
+                
+            # loop over the list of csv files
+            for f in csv_files:
+                if file_ctr == 21: # Put here the number of csv_files
+                    file_ctr = 1
+                
+                print("File Counter: ", file_ctr)
+
+                # print the location and filename
+                print('Location:', f)
+                print('File Name:', f.split("\\")[-1])
+                
+                # load the csv file
+                if name in actions:
+                    with open(f) as f:
+                        csv_file = np.loadtxt(f, delimiter=',')
+#                         print("CSV FILE CONTENT: \n", csv_file[0]) # CSV_FILE ARRAY TElLS WHICH LINE
+                        for line, data in enumerate(csv_file):
+                            if line == 30: # Put here number of frames
+                                break
+#                             print("Line: {0} \nData: {1}".format(line, data))
+                            os.chdir(NPY_path)
+                            npy_path = os.path.join(DATA_PATH, name, str(file_ctr))
+                            file_name = "{0}.npy".format(line)
+                            print("File name: ", file_name)
+                            print("NPY_PATH: ", os.path.join(npy_path, file_name))
+                            np.save(os.path.join(npy_path, file_name), data)
+                            print("Successfully Saved!")
+
+                print() # Line Break
+                file_ctr += 1
+                
